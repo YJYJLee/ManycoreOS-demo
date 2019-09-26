@@ -24,7 +24,7 @@ let handleRequest = (request, response) => {
     response.writeHead(200, {
         'Content-Type': 'text/html'
     });
-    fs.readFile('./index.html', null, function (error, data) {
+    fs.readFile('./ManycoreOS-demo/index.html', null, function (error, data) {
         if (error) {
             response.writeHead(404);
             respone.write('Whoops! File not found!');
@@ -37,13 +37,32 @@ let handleRequest = (request, response) => {
  
 http.createServer(handleRequest).listen(8000);
 
+//var spawn = require('child_process').spawn,
+//    ls    = spawn('ls', ['-lh', '/usr']);
+//
+//ls.stdout.on('data', function (data) {
+//  console.log('stdout: ' + data.toString());
+//});
+//
+//ls.stderr.on('data', function (data) {
+//  console.log('stderr: ' + data.toString());
+//});
+//
+//ls.on('exit', function (code) {
+//  console.log('child process exited with code ' + code.toString());
+//});
+
 const { exec } = require('child_process');
 
-exec('find . -type f | wc -l', (err, stdout, stderr) => {
+var ssa = exec('./bin/ssa -olblc -c glove.42B.300d_normalized', (err, stdout, stderr) => {
   if (err) {
     console.error(`exec error: ${err}`);
     return;
   }
 
   console.log(`Number of files ${stdout}`);
+});
+
+ssa.stdout.on('data', function(data) {
+    console.log(data); 
 });

@@ -255,15 +255,16 @@
     } else if (multiCore.style.display != "none" && singleCore.style.display === "none") {
       core = "multi\n";
     }
-    else
-
+    else {
+      core = "None\n";
+	}
 
     var textToSave = core.concat(document.getElementById("word0").value, "\n", document.getElementById("word1").value, "\n", document.getElementById("word2").value);
 
     var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
     var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
     var fileNameToSaveAs = "query.txt"
- 
+
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
     downloadLink.innerHTML = "Download File";
@@ -273,33 +274,24 @@
     document.body.appendChild(downloadLink);
     downloadLink.click();
 
-    // var exec = require('child_process').exec;
-    // var child;
+//// Requiring fs module in which 
+//// writeFile function is defined. 
+//const fs = require('fs') 
+//  
+//// Data which will write in a file. 
+//let data = "Learning how to write in a file."
+//  
+//// Write data in 'Output.txt' . 
+//fs.writeFile('Output.txt', data, (err) => { 
+//      
+//    // In case of a error throw err. 
+//    if (err) throw err; 
+//}) 
 
-    // child = exec(command,
-    //    function (error, stdout, stderr) {
-    //       console.log('stdout: ' + stdout);
-    //       console.log('stderr: ' + stderr);
-    //       if (error !== null) {
-    //           console.log('exec error: ' + error);
-    //       }
-    //    });
+});  
 
-    const ls = spawn("ls", ["-lh", "/usr"]);
 
-    ls.stdout.on("data", function(data) {
-      console.log(data);
-    });
-
-    ls.stderr.on("data", function(data) {
-      console.log(data);
-    });
-
-    ls.on("close", function(code) {
-      console.log(`child process exited with code ${code}`);
-    });
-
-  }
+}
 
   function destroyClickedElement(event)
   {
