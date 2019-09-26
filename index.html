@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script type="text/javascript" src="https://d3js.org/d3.v3.js"></script>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,8 +12,97 @@
   <title>Seoul National University ManycoreOS Demo</title>
 
   <style>
-  body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
+  body{ font: Arial 12px; text-align: center;}
+
+  h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
   .myLink {display: none}
+
+  .dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .dropbtn:hover, .dropbtn:focus {
+    background-color: #3e8e41;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: tranparent;
+    min-width: 160px;
+    overflow: auto;
+    /*box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);*/
+  }
+
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dropdown-content a:hover {background-color: #f1f1f1}
+
+  .show {display:block;}
+
+  .link {
+    stroke: #ccc;
+  }
+
+  .node text {
+    pointer-events: none;
+    font: sans-serif;
+  }
+
+
+  .modal-dialog {
+    position: relative;
+    left: 300px;
+    width: 1000px;
+    height:600px !important;
+    background-color:#BBB6EC;
+  }
+  .modal-content {
+    /* 80% of window height */
+    height: 80%;
+  }        
+  .modal-header {
+      background-color: #800080;
+      padding:0px 0px;
+      color:#FFF;
+      border-bottom:2px dashed #337AB7;
+   }
+  .modal-body {
+      background-color: #00FF00;
+      /*padding:16px 16px;*/
+      /*color:#FFF;*/
+      /*border-bottom:2px dashed #337AB7;*/
+   }
+
+
+  /* The Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
   </style>
 
   <!-- Bootstrap core CSS -->
@@ -25,20 +115,17 @@
 
   <!-- Custom styles for this template -->
   <link href="css/coming-soon.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="main.css">
 
 </head>
 
 <body>
-  <form action="/action_page.php" method="post">
-  First name: <input type="text" name="fname"><br>
-  Last name: <input type="text" name="lname"><br>
-  <input type="submit" value="Submit">
-</form>
-<!--
-  <div class="overlay"></div>
-  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+
+  <!--<video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
     <source src="mp4/bg.mp4" type="video/mp4">
-  </video>
+  </video> -->
+
+
   <div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">
@@ -49,38 +136,64 @@
             <p class="mb-5">This Website is for Final Demo for ManycoreOS. You should fill in the blanks below with the words you want to find similar terms.
             <strong>Similarity Search</strong>! Fill in the blanks below!</p>
 
-  
+            <form method="post">
+            <div class="input-group input-group-newsletter">
+              <input type="word" class="form-control" placeholder="Enter a word..." aria-label="Enter a word..." aria-describedby="basic-addon" required name="Word0" id="word0">
+              <div class="input-group-append">
+                <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#myModal" id="word0_modal">Check graph!</button>
+              </div>
+            </div>
+            <div class="input-group input-group-newsletter">
+              <input type="word" class="form-control" placeholder="Enter a word..." aria-label="Enter a word..." aria-describedby="basic-addon" required name="Word1" id="word1">
+              <div class="input-group-append">
+                <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#myModal" id="word1_modal">Check graph!</button>
+              </div>
+            </div>
+            <div class="input-group input-group-newsletter">
+              <input type="word" class="form-control" placeholder="Enter a word..." aria-label="Enter a word..." aria-describedby="basic-addon" required name="Word2" id="word2">
+              <div class="input-group-append">
+                <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#myModal" id="word2_modal">Check graph!</button>
+              </div>
+            </div>
+            <div id="single" style="display:none;" class="answer_list">Single Core</div>
+            <div id="multi"  style="display:none;" class="answer_list">Multi Core</div>
+            <div class="dropdown">
+              <button id="myBtn" class="btn btn-secondary">Dropdown</button>
+              <div id="myDropdown" class="dropdown-content">
 
+              <input type="button" class="btn btn-secondary" value="Single Core" onclick="showSingle()" />
+              <input type="button" class="btn btn-secondary" value="Multi Core" onclick="showMulti()" />
+              </div>
+            </div>
 
-            <form action="/action_page.php" target="_blank">
-            <div class="input-group input-group-newsletter">
-              <input type="word" class="form-control" placeholder="Enter a word..." aria-label="Enter a word..." aria-describedby="basic-addon" required name="Word0">
-              <div class="input-group-append">
-                <button class="btn btn-secondary" type="button">Check graph!</button>
-              </div>
-            </div>
-            <div class="input-group input-group-newsletter">
-              <input type="word" class="form-control" placeholder="Enter a word..." aria-label="Enter a word..." aria-describedby="basic-addon" required name="Word1">
-              <div class="input-group-append">
-                <button class="btn btn-secondary" type="button">Check graph!</button>
-              </div>
-            </div>
-            <div class="input-group input-group-newsletter">
-              <input type="word" class="form-control" placeholder="Enter a word..." aria-label="Enter a word..." aria-describedby="basic-addon" required name="Word2">
-              <div class="input-group-append">
-                <button class="btn btn-secondary" type="button">Check graph!</button>
-              </div>
-            </div>
-            <button class="btn btn-secondary" type="button">Single Core</button>
-            <button class="btn btn-secondary" type="button">Multi Core</button>
-            <button class="btn btn-secondary" type="submit">Submit</button>
+            <button class="btn btn-secondary" type="submit" onclick="saveTextAsFile()">Submit</button>
+
             </form>
           </div>
         </div>
       </div>
     </div>
   </div>
--->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">X</span></button>
+          <h4 class="modal-title" id="myModalLabel">Similarity Graph</h4>
+        </div>
+        <div class="modal-body" id="similarityGraph" >
+        </div>
+        <!-- 
+        <div class="modal-footer">
+          <button type="button" class="btn btn btn-primary" data-dismiss="modal">OK</button>
+          <button type="button" class="btn btn btn-success" data-dismiss="modal">Save</button>
+          <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+ 
   <div class="social-icons">
     <ul class="list-unstyled text-center mb-0">
       <li class="list-unstyled-item">
@@ -100,14 +213,245 @@
       </li>
     </ul>
   </div>
+  <script type="text/javascript">
+  // Get the button, and when the user clicks on it, execute myFunction
+  document.getElementById("myBtn").onclick = function() {myFunction()};
 
-  <!-- Bootstrap core JavaScript -->
+  /* myFunction toggles between adding and removing the show class, which is used to hide and show the dropdown content */
+  function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+  function showSingle() {
+    var x = document.getElementById('single');
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+    var y = document.getElementById('multi');
+    if (y.style.display != "none")
+      y.style.display = "none";
+  }
+
+  function showMulti() {
+    var x = document.getElementById('multi');
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+    var y = document.getElementById('single');
+    if (y.style.display != "none")
+      y.style.display = "none";  
+  }
+
+  function saveTextAsFile()
+  {
+    var multiCore = document.getElementById('multi');
+    var singleCore = document.getElementById('single');
+    var core;
+    if (multiCore.style.display === "none" && singleCore.style.display != "none") {
+      core = "single\n";
+    } else if (multiCore.style.display != "none" && singleCore.style.display === "none") {
+      core = "multi\n";
+    }
+    else
+
+
+    var textToSave = core.concat(document.getElementById("word0").value, "\n", document.getElementById("word1").value, "\n", document.getElementById("word2").value);
+
+    var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+    var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+    var fileNameToSaveAs = "query.txt"
+ 
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    downloadLink.href = textToSaveAsURL;
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+
+    // var exec = require('child_process').exec;
+    // var child;
+
+    // child = exec(command,
+    //    function (error, stdout, stderr) {
+    //       console.log('stdout: ' + stdout);
+    //       console.log('stderr: ' + stderr);
+    //       if (error !== null) {
+    //           console.log('exec error: ' + error);
+    //       }
+    //    });
+
+    const ls = spawn("ls", ["-lh", "/usr"]);
+
+    ls.stdout.on("data", function(data) {
+      console.log(data);
+    });
+
+    ls.stderr.on("data", function(data) {
+      console.log(data);
+    });
+
+    ls.on("close", function(code) {
+      console.log(`child process exited with code ${code}`);
+    });
+
+  }
+
+  function destroyClickedElement(event)
+  {
+      document.body.removeChild(event.target);
+  }
+
+  // Get the modal
+  var modal = document.getElementById("myModal");
+  var modal_body = document.getElementById("similarityGraph");
+
+  // Get the button that opens the modal
+  var btn0 = document.getElementById("word0_modal");
+  var btn1 = document.getElementById("word1_modal");
+  var btn2 = document.getElementById("word2_modal");
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];                                          
+
+  // When the user clicks on the button, open the modal 
+  btn0.onclick = function() {
+    modal.style.display = "block";
+    //Set margins and sizes
+    var margin = {
+      top: 0,
+      bottom: 0,
+      right: 0,
+      left: 0
+    };
+    var width = 960 - margin.left - margin.right;
+    var height = 700 - margin.top - margin.bottom;
+    // document.body.style.backgroundColor = "#FDF5E6";
+
+    //Load Color Scale
+    var c10 = d3.scale.category10();
+    //Create an SVG element and append it to the DOM
+    var svgElement = d3.select(modal_body)
+              .append("svg")
+              // .attr({"width": width+margin.left+margin.right, "height": height+margin.top+margin.bottom})
+              .attr({"width":1000, "height":500})
+              .append("g")
+              // .style("fill", "purple")
+              // .attr("transform","translate("+margin.left+","+margin.top+")")
+
+      //Load External Data
+        d3.json("../input.json", function(dataset){
+      //Extract data from dataset
+      var nodes = dataset.nodes,
+        links = dataset.links;
+      //Create Force Layout
+      var force = d3.layout.force()
+              .size([width, height])
+              .nodes(nodes)
+              .links(links)
+              .gravity(0.05)
+              .charge(-1000)
+              .linkDistance(200);
+      //Add links to SVG
+      var link = svgElement.selectAll(".link")
+            .data(links)
+            .enter()
+            .append("line")
+            .attr("stroke-width", function(d){ return d.weight/10; })
+            .attr("class", "link");
+      //Add nodes to SVG
+      var node = svgElement.selectAll(".node")
+            .data(nodes)
+            .enter()
+            .append("g")
+            .attr("class", "node")
+            .on("click", click)
+            .on("dblclick", dblclick)
+            .call(force.drag);
+
+      //Add labels to each node
+      var label = node.append("text")
+              .attr("dx", 12)
+              .attr("dy", "0.35em")
+              .attr("font-size", function(d){ return d.influence*1.5>9? d.influence*1.5: 9; })
+              .text(function(d){ return d.character; });
+      //Add circles to each node
+      var circle = node.append("circle")
+              .attr("r", function(d){ return d.influence/2>5 ? d.influence/2 : 5; })
+              .attr("fill", function(d){ return c10(d.zone*10); })
+              .style("stroke", "white")
+              .style("stroke-width", 3);
+      //This function will be executed for every tick of force layout 
+      force.on("tick", function(){
+        //Set X and Y of node
+        node.attr("r", function(d){ return d.influence; })
+          .attr("cx", function(d){ return 100; })
+          .attr("cy", function(d){ return 100; });
+        //Set X, Y of link
+        link.attr("x1", function(d){ return d.source.x; })
+        link.attr("y1", function(d){ return d.source.y; })
+        link.attr("x2", function(d){ return d.target.x; })
+        link.attr("y2", function(d){ return d.target.y; });
+        //Shift node a little
+        node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+      });
+      //Start the force layout calculation
+      force.start();
+
+      // action to take on mouse click
+      function click() {
+          d3.select(this).select("text").transition()
+              .duration(750)
+              .attr("x", 22)
+              .style("stroke", "lightsteelblue")
+              .style("stroke-width", ".5px")
+              .style("font", "20px sans-serif");
+          d3.select(this).select("circle").transition()
+              .duration(750)
+              .attr("r", 16);
+      }
+       
+      // action to take on mouse double click
+      function dblclick() {
+          d3.select(this).select("circle").transition()
+              .duration(750)
+              .attr("r", 6);
+          d3.select(this).select("text").transition()
+              .duration(750)
+              .attr("x", 12)
+              .style("stroke", "none")
+              .style("fill", "black")
+              .style("stroke", "none")
+              .style("font", "10px sans-serif");
+      }
+    });
+  }
+  btn1.onclick = function() {
+      modal.style.display = "block";
+  }
+  btn2.onclick = function() {
+      modal.style.display = "block";
+  }
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+      modal.style.display = "none";
+  }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+  }
+  </script>
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Custom scripts for this template -->
   <script src="js/coming-soon.min.js"></script>
 
 </body>
-
 </html>
